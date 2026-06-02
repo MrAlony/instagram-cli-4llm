@@ -37,7 +37,8 @@ export type Message =
 	| MediaMessage
 	| LinkMessage
 	| PlaceholderMessage
-	| MediaShareMessage;
+	| MediaShareMessage
+	| ReelShareMessage;
 
 type BaseMessage = {
 	id: string;
@@ -77,6 +78,44 @@ export type MediaShareMessage = {
 	mediaSharePost: Post;
 	mediaShareIndex?: number;
 } & BaseMessage;
+
+export type ReelShare = {
+	mediaId: string;
+	shortcode?: string;
+	targetUrl?: string;
+	creatorUsername?: string;
+	previewUrl?: string;
+	previewWidth?: number;
+	previewHeight?: number;
+};
+
+export type ReelShareMessage = {
+	itemType: 'reel_share';
+	reelShare: ReelShare;
+} & BaseMessage;
+
+export type MediaComment = {
+	id: string;
+	username?: string;
+	text: string;
+	likeCount: number;
+	createdAt?: number;
+};
+
+export type MediaContext = {
+	mediaId: string;
+	shortcode?: string;
+	targetUrl?: string;
+	creatorUsername?: string;
+	caption?: string;
+	likeCount?: number;
+	commentCount?: number;
+	playCount?: number;
+	mediaType?: number;
+	productType?: string;
+	previewUrl?: string;
+	topComments: MediaComment[];
+};
 
 export type MessageMedia = {
 	id: string;

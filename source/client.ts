@@ -29,6 +29,7 @@ import {ConfigManager} from './config.js';
 import type {
 	Thread,
 	Message,
+	MediaContext,
 	User,
 	Story,
 	StoryReel,
@@ -872,6 +873,68 @@ export class InstagramClient extends EventEmitter {
 			} catch {
 				this.logger.warn('MQTT mark as seen failed, falling back to API.');
 			}
+		}
+	}
+
+	public async getMediaContext(mediaId: string): Promise<MediaContext> {
+		try {
+			const [mediaInfo, comments] = await Promise.all([
+				this.ig.media.info(mediaId),
+				this.ig.feed
+					.mediaComments(mediaId)
+					.items()
+					.catch((error: unknown) => {
+						const message =
+							error instanceof Error ? error.message : String(error);
+						this.logger.warn(`Failed to fetch media comments: ${message}`);
+						return [];
+					}),
+			]);
+			const item = Array.isArray(mediaInfo.items)
+				? mediaInfo.items[0]
+				: undefined;
+			if (!item) {
+				throw new Error(`No media info found for ${mediaId}.`);
+			}
+
+			const rawItem = item as typeof item & {
+				play_count?: number;
+				ig_play_count?: number;
+				product_type?: string;
+			};
+
+			const topComments = comments
+				.map(comment => ({
+					id: String(comment.pk ?? ''),
+					username: comment.user?.username,
+					text: String(comment.text ?? '').trim(),
+					likeCount: Number(comment.comment_like_count ?? 0),
+					createdAt: Number(comment.created_at ?? 0) || undefined,
+				}))
+				.filter(comment => comment.text)
+				.sort((left, right) => right.likeCount - left.likeCount)
+				.slice(0, 5);
+
+			return {
+				mediaId: String(item.pk ?? mediaId),
+				shortcode: item.code,
+				targetUrl: item.code
+					? `https://www.instagram.com/reel/${item.code}/`
+					: undefined,
+				creatorUsername: item.user?.username,
+				caption: item.caption?.text,
+				likeCount: Number(item.like_count ?? 0) || undefined,
+				commentCount: Number(item.comment_count ?? 0) || undefined,
+				playCount:
+					Number(rawItem.play_count ?? rawItem.ig_play_count ?? 0) || undefined,
+				mediaType: item.media_type,
+				productType: rawItem.product_type,
+				previewUrl: item.image_versions2?.candidates?.[0]?.url,
+				topComments,
+			};
+		} catch (error) {
+			this.logger.error('Failed to fetch media context', error);
+			throw error;
 		}
 	}
 

@@ -107,11 +107,27 @@ type MediaShareItem = ThreadGenericMessageItem & {
 	direct_media_share?: RawMediaSharePayload;
 };
 
+type XmaClipAttachment = {
+	header_title_text?: string;
+	preview_url?: string;
+	preview_width?: number;
+	preview_height?: number;
+	target_url?: string;
+	serialized_content_ref?: string;
+};
+
+type XmaClipItem = ThreadGenericMessageItem & {
+	item_type: 'xma_clip' | 'clip';
+	original_media_igid?: string;
+	xma_clip?: XmaClipAttachment[];
+};
+
 type RealChatItem =
 	| ThreadCommonMessageItem
 	| RealLinkMessageItem
 	| ActionLogItem
-	| MediaShareItem;
+	| MediaShareItem
+	| XmaClipItem;
 
 type RawRepliedToMessage = {
 	item_id: string;
@@ -230,6 +246,52 @@ function normalizeMediaShareToPost(
 		video_versions: media.video_versions ?? primary.video_versions,
 		carousel_media_count: media.carousel_media_count ?? carouselMedia?.length,
 		carousel_media: carouselMedia,
+	};
+}
+
+function parseSerializedClipRef(raw: string | undefined): {
+	mediaId?: string;
+	targetUrl?: string;
+	creatorUsername?: string;
+} {
+	if (!raw) return {};
+	try {
+		const parsed = JSON.parse(raw) as {
+			fetch_params?: {media_igid?: string};
+			target_url?: string;
+			username?: string;
+		};
+		return {
+			mediaId: parsed.fetch_params?.media_igid,
+			targetUrl: parsed.target_url,
+			creatorUsername: parsed.username,
+		};
+	} catch {
+		return {};
+	}
+}
+
+function parseReelShortcode(targetUrl: string | undefined): string | undefined {
+	if (!targetUrl) return undefined;
+	const match = /instagram\.com\/reel\/([^/?#]+)/.exec(targetUrl);
+	return match?.[1];
+}
+
+function normalizeXmaClip(item: XmaClipItem) {
+	const clip = item.xma_clip?.[0];
+	const serialized = parseSerializedClipRef(clip?.serialized_content_ref);
+	const targetUrl = clip?.target_url ?? serialized.targetUrl;
+	const mediaId = item.original_media_igid ?? serialized.mediaId;
+	if (!mediaId) return undefined;
+
+	return {
+		mediaId,
+		shortcode: parseReelShortcode(targetUrl),
+		targetUrl,
+		creatorUsername: clip?.header_title_text ?? serialized.creatorUsername,
+		previewUrl: clip?.preview_url,
+		previewWidth: clip?.preview_width,
+		previewHeight: clip?.preview_height,
 	};
 }
 
@@ -368,7 +430,7 @@ export function parseMessageItem(
 				mediaShareItem.media_share ??
 				mediaShareItem.xma_media_share ??
 				mediaShareItem.direct_media_share ??
-				(mediaShareItem.media as RawMediaSharePayload | undefined);
+				mediaShareItem.media;
 
 			const post = normalizeMediaShareToPost(mediaShare);
 
@@ -387,13 +449,13 @@ export function parseMessageItem(
 			};
 		}
 
-		// Reels and RavenMedia (disappearing) remain as brainrot blockers
+		// RavenMedia (disappearing) remains unsupported.
 		case MessageSyncMessageTypes.RavenMedia:
 		case MessageSyncMessageTypes.ReelShare: {
 			return {
 				...baseMessage,
 				itemType: 'placeholder',
-				text: `[Instagram CLI successfully blocked a brainrot]`,
+				text: '[Unsupported disappearing/reel-share message]',
 			};
 		}
 
@@ -410,12 +472,20 @@ export function parseMessageItem(
 		}
 
 		default: {
-			// clip seems to be a new type that is not documented and is the same as brainrot / reels
-			if ((item.item_type as any) === 'clip') {
+			if (item.item_type === 'clip' || item.item_type === 'xma_clip') {
+				const reelShare = normalizeXmaClip(item);
+				if (reelShare) {
+					return {
+						...baseMessage,
+						itemType: 'reel_share',
+						reelShare,
+					};
+				}
+
 				return {
 					...baseMessage,
 					itemType: 'placeholder',
-					text: `[Instagram CLI successfully blocked a brainrot]`,
+					text: '[Shared a reel]',
 				};
 			}
 
