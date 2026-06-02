@@ -37,7 +37,7 @@ cd instagram-cli
 Add the original repository as an upstream remote:
 
 ```bash
-git remote add upstream https://github.com/supreme-gg-gg/instagram-cli.git
+git remote add upstream https://github.com/MrAlony/instagram-cli-4llm.git
 ```
 
 ### 3. Create a Feature Branch

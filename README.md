@@ -11,7 +11,7 @@ $$
 ![PyPI](https://img.shields.io/pypi/v/instagram-cli)
 [![PyPI Downloads](https://static.pepy.tech/badge/instagram-cli)](https://pepy.tech/projects/instagram-cli)
 [![AUR](https://img.shields.io/aur/version/instagram-cli?label=AUR)](https://aur.archlinux.org/packages/instagram-cli)
-[![GitHub issues](https://img.shields.io/github/issues/supreme-gg-gg/instagram-cli.svg)](https://github.com/supreme-gg-gg/instagram-cli/issues)
+[![GitHub issues](https://img.shields.io/github/issues/MrAlony/instagram-cli-4llm.svg)](https://github.com/MrAlony/instagram-cli-4llm/issues)
 
 <!-- ![Python](https://img.shields.io/pypi/pyversions/instagram-cli) -->
 
@@ -49,7 +49,7 @@ brew tap supreme-gg-gg/tap
 brew install instagram-cli
 ```
 
-The formula is available [here](https://github.com/supreme-gg-gg/homebrew-tap/blob/main/Formula/instagram-cli.rb).
+The formula is available [here](https://github.com/MrAlony/instagram-cli-4llm).
 
 ### Community Packages
 
@@ -174,7 +174,7 @@ We welcome contributors! Please see the comprehensive [CONTRIBUTING.md](CONTRIBU
 
 ### Reporting Issues
 
-Occasionally, Instagram may update their API or protocols which can cause certain features to break. If you encounter any issues, please report them on our [GitHub Issues page](https://github.com/supreme-gg-gg/instagram-cli/issues). Make sure to attach the relevant log files located at `~/.instagram-cli/logs/` to help us diagnose and fix the problem quickly. You may want to redact sensitive data like your username for privacy.
+Occasionally, Instagram may update their API or protocols which can cause certain features to break. If you encounter any issues, please report them on our [GitHub Issues page](https://github.com/MrAlony/instagram-cli-4llm/issues). Make sure to attach the relevant log files located at `~/.instagram-cli/logs/` to help us diagnose and fix the problem quickly. You may want to redact sensitive data like your username for privacy.
 
 ### Sister projects
 

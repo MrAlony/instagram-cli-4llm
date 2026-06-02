@@ -7,8 +7,8 @@ The ultimate weapon against brainrot. Shown experimentally to effectively reduce
 ![PyPI](https://img.shields.io/pypi/v/instagram-cli)
 [![PyPI Downloads](https://static.pepy.tech/badge/instagram-cli)](https://pepy.tech/projects/instagram-cli)
 ![Python](https://img.shields.io/pypi/pyversions/instagram-cli)
-[![MIT license](https://img.shields.io/github/license/supreme-gg-gg/instagram-cli.svg)](https://github.com/supreme-gg-gg/instagram-cli/blob/main/LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/supreme-gg-gg/instagram-cli.svg)](https://github.com/supreme-gg-gg/instagram-cli/issues)
+[![MIT license](https://img.shields.io/github/license/MrAlony/instagram-cli-4llm.svg)](https://github.com/MrAlony/instagram-cli-4llm/blob/main/LICENSE)
+[![GitHub issues](https://img.shields.io/github/issues/MrAlony/instagram-cli-4llm.svg)](https://github.com/MrAlony/instagram-cli-4llm/issues)
 
 <!-- ![PyPI - Downloads](https://img.shields.io/pypi/dm/instagram-cli) -->
 <!-- ![LOC](https://tokei.rs/b1/github/supreme-gg-gg/instagram-cli?category=code) -->
@@ -45,7 +45,7 @@ If you do not have Python installed, you can download and install it from the [o
 ### Installation from Source
 
 ```bash
-git clone https://github.com/supreme-gg-gg/instagram-cli.git
+git clone https://github.com/MrAlony/instagram-cli-4llm.git
 cd instagram-cli
 pip install .
 ```
@@ -138,13 +138,13 @@ We support LaTeX rendering and sending as images in the chat. For example,
 
 `:latex $\frac{a}{b} + c = d$`
 
-![sample1](https://github.com/supreme-gg-gg/instagram-cli/blob/main/resource/latex_sample_1.png?raw=true)
+![sample1](https://github.com/MrAlony/instagram-cli-4llm/blob/main/resource/latex_sample_1.png?raw=true)
 
 ```bash
 :latex $\left( \begin{bmatrix} a & b \\ c & d \end{bmatrix} \cdot \begin{bmatrix} e & f \\ g & h \end{bmatrix} \right) + \begin{bmatrix} i & j \\ k & l \end{bmatrix}^{-1} \times \left( \int_0^1 x^2 \, dx \right) + \begin{bmatrix} \sin(\theta) & \cos(\theta) \\ \tan(\phi) & \ln(\psi) \end{bmatrix}$
 ```
 
-![sample2](https://github.com/supreme-gg-gg/instagram-cli/blob/main/resource/latex_sample.png?raw=true)
+![sample2](https://github.com/MrAlony/instagram-cli-4llm/blob/main/resource/latex_sample.png?raw=true)
 
 Please note that the LaTeX code **_MUST_** be enclosed in `$` symbols.
 
